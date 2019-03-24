@@ -1,6 +1,5 @@
 package com.deucate
 
-import com.deucate.model.Response
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -12,6 +11,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.response.respondText
+import io.ktor.routing.delete
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import kotlinx.coroutines.async
@@ -38,14 +38,21 @@ fun Application.main() {
             val event = async {
                 server.geEventByID(id)
             }
-            call.respond(event.await() ?: Response(HttpStatusCode.BadRequest))
+            call.respond(event.await())
         }
 
         get("/all-rooms") {
             val events = async {
                 server.getAllEvents()
             }
-            call.respond(events.await() ?: Response(HttpStatusCode.BadRequest))
+            call.respond(events.await())
+        }
+
+        delete("/deleteAll") {
+            val result = async {
+                server.deleteAllEvents()
+            }
+            call.respond(result.await())
         }
 
     }

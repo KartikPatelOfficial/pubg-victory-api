@@ -1,15 +1,20 @@
 package com.deucate
 
-import com.deucate.model.Event
+import io.ktor.http.HttpStatusCode
 
 interface Database {
 
-    suspend fun geEventByID(id:String): Event?
+    suspend fun geEventByID(id: String): EventData
 
-    suspend fun getAllEvents(): ArrayList<Event>?
+    suspend fun getAllEvents(): EventData
 
-    suspend fun deleteEvent(id: String, callback: (response: Void?, error: String?) -> Unit)
+    suspend fun deleteEvent(id: String): EventData
 
-    suspend fun deleteAllEvents(callback: (response: Void?, error: String?) -> Unit)
+    suspend fun deleteAllEvents(): EventData
 
 }
+
+data class EventData(
+    val response: Any?,
+    val status: HttpStatusCode
+)

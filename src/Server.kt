@@ -32,16 +32,16 @@ private val db = options.service
 
 class Server : Database {
 
-    override suspend fun geEventByID(id: String): Event? {
+    override suspend fun geEventByID(id: String): EventData {
         return try {
             val document = db.collection("Rooms").document(id).get().get()
-            document.toObject(Event::class.java)
+            EventData(document.toObject(Event::class.java), HttpStatusCode.OK)
         } catch (e: Exception) {
-            null
+            EventData(null, HttpStatusCode.BadRequest)
         }
     }
 
-    override suspend fun getAllEvents(): ArrayList<Event>? {
+    override suspend fun getAllEvents(): EventData {
         val documents = db.collection("Rooms").get().get().documents
         val rooms = ArrayList<Event>()
 
@@ -50,19 +50,19 @@ class Server : Database {
         }
 
         return if (rooms.isEmpty()) {
-            null
+            EventData(null, HttpStatusCode.BadRequest)
         } else {
-            rooms
+            EventData(rooms, HttpStatusCode.OK)
+
         }
     }
 
-    override suspend fun deleteEvent(id: String, callback: (response: Void?, error: String?) -> Unit) {
-        db.collection("Rooms").document(id).delete()
+    override suspend fun deleteEvent(id: String): EventData {
+        return EventData(null, HttpStatusCode.Forbidden)
     }
 
-
-    override suspend fun deleteAllEvents(callback: (response: Void?, error: String?) -> Unit) {
-        callback.invoke(null, "500 internal server error")
+    override suspend fun deleteAllEvents(): EventData {
+        return EventData(null, HttpStatusCode.Forbidden)
     }
 
 }
