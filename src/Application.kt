@@ -1,7 +1,6 @@
 package com.deucate
 
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.cloud.firestore.FirestoreOptions
+import com.deucate.model.Response
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -16,20 +15,10 @@ import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import kotlinx.coroutines.async
-import java.io.FileInputStream
-
 
 @Suppress("BlockingMethodInNonBlockingContext")
 fun Application.main() {
 
-    val serviceAccount = FileInputStream("src/core/config.json")
-
-    val options = FirestoreOptions.newBuilder()
-        .setTimestampsInSnapshotsEnabled(true)
-        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-        .build()
-
-    val db = options.service
     val server = Server()
 
     install(StatusPages) {
@@ -45,18 +34,18 @@ fun Application.main() {
     routing {
 
         get("/room") {
-            val id = call.request.queryParameters["id"] ?: "200"
+            val id = call.request.queryParameters["id"] ?: ""
             val event = async {
                 server.geEventByID(id)
             }
-            call.respond(event.await() ?: 404)
+            call.respond(event.await() ?: Response(HttpStatusCode.BadRequest))
         }
 
         get("/all-rooms") {
             val events = async {
                 server.getAllEvents()
             }
-            call.respond(events.await() ?: 404)
+            call.respond(events.await() ?: Response(HttpStatusCode.BadRequest))
         }
 
     }

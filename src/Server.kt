@@ -4,6 +4,7 @@ import com.deucate.model.Event
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.FirestoreOptions
 import io.ktor.application.Application
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import java.io.FileInputStream
