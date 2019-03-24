@@ -5,8 +5,8 @@ import com.google.cloud.Timestamp
 
 const val NotFound = "Not Found"
 
-data class Room(
-    val AuthorID: String = NotFound,
+data class Event(
+    var AuthorID: String = NotFound,
     val AuthorName: String = NotFound,
     val EntryFees: Long = 0,
     val GameDescription: String = NotFound,
